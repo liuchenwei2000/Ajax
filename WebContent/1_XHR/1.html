@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<meta http-equiv="Content-Type" charset="utf-8" >
+	<head>
+        <title>XHR 用法</title>
+        <script>
+            function changeInfo(){
+                // 创建 XHR 对象
+                var xhr = new XMLHttpRequest();
+
+                /**
+                 * 多数情况下，我们还是要发送异步请求，才能让 JavaScript 继续执行而不必等待响应。
+                 * 此时，可以检测 XHR 对象的 readyState 属性，该属性表示请求/响应过程的当前活动阶段。
+                 *
+                 * 这个属性可取的值如下：
+                 * 0：未初始化。尚未调用 open()方法。
+                 * 1：启动。已经调用 open()方法，但尚未调用 send()方法。
+                 * 2：发送。已经调用 send()方法，但尚未接收到响应。
+                 * 3：接收。已经接收到部分响应数据。
+                 * 4：完成。已经接收到全部响应数据，而且已经可以在客户端使用了。
+                 *
+                 * 只要 readyState 属性的值由一个值变成另一个值，都会触发一次 readystatechange 事件。
+                 * 可以利用这个事件来检测每次状态变化后 readyState 的值。
+                 * 通常只对 readyState 值为 4 的阶段感兴趣，因为这时所有数据都已经就绪。
+                 * 不过，必须在调用 open() 之前指定 onreadystatechange 事件处理程序才能确保跨浏览器兼容性。
+                 */
+                xhr.onreadystatechange = function() {
+                    /*
+                     * 在收到响应后，响应的数据会自动填充 XHR 对象的属性，相关的属性简介如下：
+                     *
+                     * responseText：作为响应主体被返回的文本。
+                     * responseXML：如果响应的内容类型是"text/xml"或"application/xml"，这个属性中将保存包含着响应数据的 XML DOM 文档。
+                     * status：响应的 HTTP 状态。
+                     * statusText：HTTP 状态的说明。
+                     *
+                     * 在接收到响应后，第一步是检查 status 属性，以确定响应已经成功返回。
+                     * 一般来说，可以将 HTTP 状态代码为 200 作为成功的标志。
+                     */
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        document.getElementById("myDiv").innerHTML = xhr.responseText;
+                    }
+                }
+
+                /**
+                 * 在使用 XHR 对象时，要调用的第一个方法是 open()，它接受 3 个参数：
+                 * 要发送的请求的类型（"get"、"post"等）、请求的 URL 和表示是否异步发送请求的布尔值。
+                 *
+                 * 这行代码会启动一个针对 /ajax/change.do 的 GET 请求。有关这行代码，需要说明两点：
+                 * 一是 URL 相对于执行代码的当前页面（当然也可以使用绝对路径）；
+                 * 二是调用 open() 方法并不会真正发送请求，而只是启动一个请求以备发送。
+                 *
+                 * 只能向同一个域中使用相同端口和协议的 URL 发送请求。
+                 * 如果 URL 与启动请求的页面有任何差别，都会引发安全错误。
+                 */
+                xhr.open("GET", "/ajax/about.do", true);
+
+                /**
+                 * send() 方法接收一个参数，即要作为请求主体发送的数据。
+                 * 如果不需要通过请求主体发送数据，则必须传入 null，因为这个参数对有些浏览器来说是必需的。
+                 * 调用 send()之后，请求就会被分派到服务器。
+                 */
+                xhr.send(null);
+            }
+
+        </script>
+    </head>
+    <body>
+        <div id="myDiv">
+            What's this?
+        </div>
+        <button name="change" onclick="changeInfo()">
+            change it
+        </button>
+    </body>
+
+</html>

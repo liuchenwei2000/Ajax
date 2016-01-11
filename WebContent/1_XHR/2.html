@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<meta http-equiv="Content-Type" charset="utf-8" >
+	<head>
+        <title>HTTP 头部信息</title>
+        <script>
+            /**
+             * 每个 HTTP 请求和响应都会带有相应的头部信息，
+             * XHR 对象也提供了操作这两种头部（即请求头部和响应头部）信息的方法。
+             *
+             * 默认情况下，在发送 XHR 请求的同时，还会发送下列头部信息:
+             *
+             * Accept：浏览器能够处理的内容类型。
+             * Accept-Charset：浏览器能够显示的字符集。
+             * Accept-Encoding：浏览器能够处理的压缩编码。
+             * Accept-Language：浏览器当前设置的语言。
+             * Connection：浏览器与服务器之间连接的类型。
+             * Cookie：当前页面设置的任何 Cookie。
+             * Host：发出请求的页面所在的域 。
+             * Referer：发出请求的页面的 URI。
+             * User-Agent：浏览器的用户代理字符串。
+             *
+             * 虽然不同浏览器实际发送的头部信息会有所不同，但以上列出的基本上是所有浏览器都会发送的。
+             */
+            function changeInfo(){
+                var xhr = new XMLHttpRequest();
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        /**
+                         * 调用 XHR 对象的 getResponseHeader() 方法并传入头部字段名称，可以取得相应的响应头部信息。
+                         * 而调用 getAllResponseHeaders() 方法则可以取得一个包含所有头部信息的长字符串。
+                         */
+                        var myHeader = xhr.getResponseHeader("MyHeader");
+                        alert(myHeader);
+
+                        var allHeaders = xhr.getAllResponseHeaders();
+                        document.getElementById("myDiv").innerHTML = allHeaders;
+                    }
+                }
+
+                /**
+                 * 使用 setRequestHeader() 方法可以设置自定义的请求头部信息。
+                 * 这个方法接受两个参数：头部字段的名称和头部字段的值。
+                 * 要成功发送请求头部信息，必须在调用 open() 方法之后且调用 send()方法 之前调用它。
+                 */
+                xhr.open("GET", "/ajax/about.do", true);
+                xhr.setRequestHeader("MyHeader", "MyValue");
+                xhr.send(null);
+            }
+
+        </script>
+    </head>
+    <body>
+        <div id="myDiv">
+            What's this?
+        </div>
+        <button name="change" onclick="changeInfo()">
+            change it
+        </button>
+    </body>
+
+</html>
